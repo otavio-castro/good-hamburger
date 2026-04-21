@@ -1,0 +1,6 @@
+@GoodHamburgerApi_HostAddress = http://localhost:5082
+
+GET {{GoodHamburgerApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

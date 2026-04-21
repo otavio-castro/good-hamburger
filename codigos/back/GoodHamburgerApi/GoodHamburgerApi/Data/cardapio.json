@@ -1,0 +1,32 @@
+[
+  {
+    "Id": 1,
+    "Nome": "X Burger",
+    "Preco": 5.00,
+    "Categoria": "Sanduiche"
+  },
+  {
+    "Id": 2,
+    "Nome": "X Egg",
+    "Preco": 4.50,
+    "Categoria": "Sanduiche"
+  },
+  {
+    "Id": 3,
+    "Nome": "X Bacon",
+    "Preco": 7.00,
+    "Categoria": "Sanduiche"
+  },
+  {
+    "Id": 4,
+    "Nome": "Batata frita",
+    "Preco": 2.00,
+    "Categoria": "Acompanhamento"
+  },
+  {
+    "Id": 5,
+    "Nome": "Refrigerante",
+    "Preco": 2.50,
+    "Categoria": "Bebida"
+  }
+]
