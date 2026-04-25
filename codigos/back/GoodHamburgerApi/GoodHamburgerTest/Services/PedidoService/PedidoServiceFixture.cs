@@ -23,7 +23,20 @@ namespace GoodHamburgerTest.Services.PedidoService
             Sut = new PedidoServiceClass(PedidoRepositoryMock.Object, CardapioServiceMock.Object, Mapper);
         }
 
-        public void GerarCenarioCardapioPadrao()
+        public void GerarCenarioCriacaoPedidoValido()
+        {
+            ResetMocks();
+
+            CardapioServiceMock
+                .Setup(service => service.ObterCardapio())
+                .ReturnsAsync(PedidoServiceHelper.CardapioPadrao());
+
+            PedidoRepositoryMock
+                .Setup(repo => repo.CriarAsync(It.IsAny<Pedido>()))
+                .ReturnsAsync((Pedido pedido) => pedido);
+        }
+
+        public void GerarCenarioCriacaoPedidoComCardapioPadrao()
         {
             ResetMocks();
 
@@ -32,28 +45,46 @@ namespace GoodHamburgerTest.Services.PedidoService
                 .ReturnsAsync(PedidoServiceHelper.CardapioPadrao());
         }
 
-        public void GerarCenarioCriacaoPedidoRetornandoMesmoObjeto()
+        public void GerarCenarioObterPedidoPorIdExistente(Pedido pedido, int id)
         {
-            PedidoRepositoryMock
-                .Setup(repo => repo.CriarAsync(It.IsAny<Pedido>()))
-                .ReturnsAsync((Pedido pedido) => pedido);
-        }
+            ResetMocks();
 
-        public void GerarCenarioAtualizacaoPedidoRetornandoMesmoObjeto()
-        {
-            PedidoRepositoryMock
-                .Setup(repo => repo.AtualizarAsync(It.IsAny<Pedido>()))
-                .ReturnsAsync((Pedido pedido) => pedido);
-        }
+            CardapioServiceMock
+                .Setup(service => service.ObterCardapio())
+                .ReturnsAsync(PedidoServiceHelper.CardapioPadrao());
 
-        public void GerarCenarioPedidoPorIdExistente(Pedido pedido, int id)
-        {
             PedidoRepositoryMock
                 .Setup(repo => repo.ObterPorIdAsync(id))
                 .ReturnsAsync(pedido);
         }
 
-        public void GerarCenarioPedidoPorIdInexistente()
+        public void GerarCenarioObterPedidoPorIdInexistente()
+        {
+            ResetMocks();
+
+            PedidoRepositoryMock
+                .Setup(repo => repo.ObterPorIdAsync(It.IsAny<int>()))
+                .ReturnsAsync((Pedido?)null);
+        }
+
+        public void GerarCenarioAtualizacaoPedidoExistente(Pedido pedido, int id)
+        {
+            ResetMocks();
+
+            CardapioServiceMock
+                .Setup(service => service.ObterCardapio())
+                .ReturnsAsync(PedidoServiceHelper.CardapioPadrao());
+
+            PedidoRepositoryMock
+                .Setup(repo => repo.ObterPorIdAsync(id))
+                .ReturnsAsync(pedido);
+
+            PedidoRepositoryMock
+                .Setup(repo => repo.AtualizarAsync(It.IsAny<Pedido>()))
+                .ReturnsAsync((Pedido pedidoAtualizado) => pedidoAtualizado);
+        }
+
+        public void GerarCenarioAtualizacaoPedidoInexistente()
         {
             ResetMocks();
 
@@ -64,6 +95,8 @@ namespace GoodHamburgerTest.Services.PedidoService
 
         public void GerarCenarioRemocaoPedido(bool removido, int? id = null)
         {
+            ResetMocks();
+
             if (id.HasValue)
             {
                 PedidoRepositoryMock

@@ -19,8 +19,7 @@ namespace GoodHamburgerTest.Services.PedidoService
         {
             #region Arrange
 
-            _fixture.GerarCenarioCardapioPadrao();
-            _fixture.GerarCenarioCriacaoPedidoRetornandoMesmoObjeto();
+            _fixture.GerarCenarioCriacaoPedidoValido();
 
             var dto = PedidoServiceHelper.CriarPedidoComItens(1, 4, 5);
 
@@ -48,7 +47,7 @@ namespace GoodHamburgerTest.Services.PedidoService
         {
             #region Arrange
 
-            _fixture.GerarCenarioCardapioPadrao();
+            _fixture.GerarCenarioCriacaoPedidoComCardapioPadrao();
             var dto = PedidoServiceHelper.CriarPedidoComItens(1, 1);
 
             #endregion
@@ -76,9 +75,8 @@ namespace GoodHamburgerTest.Services.PedidoService
         {
             #region Arrange
 
-            _fixture.GerarCenarioCardapioPadrao();
             var pedido = PedidoServiceHelper.PedidoPersistidoComItens((10, 1, 5m), (11, 4, 2m));
-            _fixture.GerarCenarioPedidoPorIdExistente(pedido, 99);
+            _fixture.GerarCenarioObterPedidoPorIdExistente(pedido, 99);
 
             #endregion
 
@@ -102,7 +100,7 @@ namespace GoodHamburgerTest.Services.PedidoService
         {
             #region Arrange
 
-            _fixture.GerarCenarioPedidoPorIdInexistente();
+            _fixture.GerarCenarioObterPedidoPorIdInexistente();
 
             #endregion
 
@@ -128,11 +126,8 @@ namespace GoodHamburgerTest.Services.PedidoService
         {
             #region Arrange
 
-            _fixture.GerarCenarioCardapioPadrao();
-            _fixture.GerarCenarioAtualizacaoPedidoRetornandoMesmoObjeto();
-
             var pedidoExistente = PedidoServiceHelper.PedidoPersistidoComItens((21, 1, 5m));
-            _fixture.GerarCenarioPedidoPorIdExistente(pedidoExistente, 99);
+            _fixture.GerarCenarioAtualizacaoPedidoExistente(pedidoExistente, 99);
 
             var dto = PedidoServiceHelper.CriarPedidoComItens(2, 5);
 
@@ -161,7 +156,7 @@ namespace GoodHamburgerTest.Services.PedidoService
         {
             #region Arrange
 
-            _fixture.GerarCenarioPedidoPorIdInexistente();
+            _fixture.GerarCenarioAtualizacaoPedidoInexistente();
             var dto = PedidoServiceHelper.CriarPedidoComItens(1, 5);
 
             #endregion
