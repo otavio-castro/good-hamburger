@@ -25,19 +25,26 @@ namespace GoodHamburgerApi.Services
 
         public async Task<PedidoDto> CriarPedidoAsync(CriarPedidoDto criarPedidoDto)
         {
-            if (criarPedidoDto.ProdutoIds.Count == 0)
-            {
-                throw new ArgumentException("Pedido inválido: informe ao menos 1 item.");
-            }
+            var cardapio = await _cardapioService.ObterCardapio().ConfigureAwait(false);
+            var pedido = CriarPedidoModel(criarPedidoDto, cardapio);
 
-            ValidarItensDuplicados(criarPedidoDto.ProdutoIds);
+            await _pedidoRepository.CriarAsync(pedido).ConfigureAwait(false);
+
+            return MapearPedidoDto(pedido, cardapio);
+        }
+
+        public async Task<PedidoDto?> ObterPedidoPorIdAsync(int id)
+        {
+            var pedido = await _pedidoRepository.ObterPorIdAsync(id).ConfigureAwait(false);
+
+            if (pedido == null)
+            {
+                return null;
+            }
 
             var cardapio = await _cardapioService.ObterCardapio().ConfigureAwait(false);
 
-            List<ProdutoDto> produtosDoCardapioExistentesNoPedido = ObterProdutosCardapioDoPedido
-                (criarPedidoDto, cardapio);
-
-            return await MontarPedidoAsync(produtosDoCardapioExistentesNoPedido).ConfigureAwait(false);
+            return MapearPedidoDto(pedido, cardapio);
         }
 
         public async Task<IEnumerable<PedidoDto>> ObterListaPedidosAsync()
@@ -46,6 +53,33 @@ namespace GoodHamburgerApi.Services
             var cardapio = await _cardapioService.ObterCardapio().ConfigureAwait(false);
 
             return pedidos.Select(pedido => MapearPedidoDto(pedido, cardapio));
+        }
+
+        public async Task<PedidoDto?> AtualizarPedidoAsync(int id, CriarPedidoDto criarPedidoDto)
+        {
+            var pedidoExistente = await _pedidoRepository.ObterPorIdAsync(id).ConfigureAwait(false);
+
+            if (pedidoExistente == null)
+            {
+                return null;
+            }
+
+            var cardapio = await _cardapioService.ObterCardapio().ConfigureAwait(false);
+            var pedidoAtualizado = CriarPedidoModel(criarPedidoDto, cardapio);
+
+            pedidoExistente.Subtotal = pedidoAtualizado.Subtotal;
+            pedidoExistente.ValorDesconto = pedidoAtualizado.ValorDesconto;
+            pedidoExistente.Total = pedidoAtualizado.Total;
+            pedidoExistente.Itens = pedidoAtualizado.Itens;
+
+            await _pedidoRepository.AtualizarAsync(pedidoExistente).ConfigureAwait(false);
+
+            return MapearPedidoDto(pedidoExistente, cardapio);
+        }
+
+        public async Task<bool> RemoverPedidoAsync(int id)
+        {
+            return await _pedidoRepository.RemoverAsync(id).ConfigureAwait(false);
         }
 
         private static List<ProdutoDto> ObterProdutosCardapioDoPedido(CriarPedidoDto criarPedidoDto, IEnumerable<ProdutoDto> cardapio)
@@ -70,8 +104,17 @@ namespace GoodHamburgerApi.Services
             return produtos;
         }
 
-        private async Task<PedidoDto> MontarPedidoAsync(List<ProdutoDto> produtosDoCardapioExistentesNoPedido)
+        private static Pedido CriarPedidoModel(CriarPedidoDto criarPedidoDto, IEnumerable<ProdutoDto> cardapio)
         {
+            if (criarPedidoDto.ProdutoIds.Count == 0)
+            {
+                throw new ArgumentException("Pedido inválido: informe ao menos 1 item.");
+            }
+
+            ValidarItensDuplicados(criarPedidoDto.ProdutoIds);
+
+            List<ProdutoDto> produtosDoCardapioExistentesNoPedido = ObterProdutosCardapioDoPedido(criarPedidoDto, cardapio);
+
             ValidarQuantidadesPorCategoria(produtosDoCardapioExistentesNoPedido);
 
             var subtotal = produtosDoCardapioExistentesNoPedido.Sum(produto => produto.Preco);
@@ -90,9 +133,7 @@ namespace GoodHamburgerApi.Services
                 }).ToList()
             };
 
-            await _pedidoRepository.CriarAsync(pedido).ConfigureAwait(false);
-
-            return MapearPedidoDto(pedido, produtosDoCardapioExistentesNoPedido);
+            return pedido;
         }
 
         private PedidoDto MapearPedidoDto(Pedido pedido, IEnumerable<ProdutoDto> produtosDoCardapio)
