@@ -9,20 +9,21 @@ namespace GoodHamburgerApi.Services
     {
         private readonly ICardapioRepository _cardapioRepository;
         private readonly IMapper _mapper;
-        private readonly string _cardapioFilePath = Path.Combine("Data", "cardapio.json");
+        private readonly ICardapioFileProvider _cardapioFileProvider;
 
-        public CardapioService(ICardapioRepository cardapioRepository, IMapper mapper)
+        public CardapioService(ICardapioRepository cardapioRepository, IMapper mapper, ICardapioFileProvider cardapioFileProvider)
         {
             _cardapioRepository = cardapioRepository;
             _mapper = mapper;
+            _cardapioFileProvider = cardapioFileProvider;
         }
 
         public async Task<IEnumerable<ProdutoDto>> ObterCardapio()
         {
-            if (!File.Exists(_cardapioFilePath))
+            if (!_cardapioFileProvider.Exists())
                 return [];
 
-            var jsonBytes = File.ReadAllText(_cardapioFilePath);
+            var jsonBytes = _cardapioFileProvider.ReadAllText();
 
             var cardapio = await _cardapioRepository.ObterCardapio(jsonBytes).ConfigureAwait(false);
             return _mapper.Map<IEnumerable<ProdutoDto>>(cardapio);

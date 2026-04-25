@@ -38,6 +38,7 @@ namespace GoodHamburgerApi.Startup
 
             builder.Services.AddScoped<IPedidoService, PedidoService>();
             builder.Services.AddScoped<ICardapioService, CardapioService>();
+            builder.Services.AddScoped<ICardapioFileProvider, CardapioFileProvider>();
 
             #endregion Services
         }
