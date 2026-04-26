@@ -19,6 +19,7 @@ O sistema entrega um fluxo simples de lanchonete:
 ### Pre-requisitos
 
 - .NET SDK 10
+- EF (Entity Framework)
 - HTTPS habilitado para executar os dois projetos localmente
 
 ### 1. Subir a API
