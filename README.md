@@ -1,6 +1,6 @@
 # Good Hamburger
 
-Projeto full stack em .NET 10 com dois aplicativos:
+Projeto full stack em .NET 10 com as seguintes separações:
 
 - `GoodHamburgerApi`: API ASP.NET Core para cardapio e pedidos.
 - `GoodHamburgerFront`: interface web em Razor Pages que consome a API.
