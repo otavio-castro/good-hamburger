@@ -1,0 +1,20 @@
+@model GoodHamburgerFront.Models.Components.CardapioSectionViewModel
+@using System.Globalization
+@{
+    var cultura = new CultureInfo("pt-BR");
+}
+
+<div class="card h-100">
+    <div class="card-body">
+        <h2 class="h5">Cardápio</h2>
+        <ul class="list-group">
+            @foreach (var item in Model.Cardapio)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>@item.Nome <small class="text-muted">(@item.Categoria)</small></span>
+                    <strong>@item.Preco.ToString("C", cultura)</strong>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,51 @@
+@model GoodHamburgerFront.Models.Components.PedidosSectionViewModel
+@using System.Globalization
+@{
+    var cultura = new CultureInfo("pt-BR");
+}
+
+<div class="card mt-4">
+    <div class="card-body">
+        <h2 class="h5">Pedidos</h2>
+
+        @if (Model.Pedidos.Count == 0)
+        {
+            <p class="text-muted mb-0">Nenhum pedido cadastrado.</p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-striped align-middle">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Itens</th>
+                            <th>Subtotal</th>
+                            <th>Desconto</th>
+                            <th>Total</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var pedido in Model.Pedidos.OrderByDescending(x => x.Id))
+                        {
+                            <tr>
+                                <td>@pedido.Id</td>
+                                <td>@string.Join(", ", pedido.Itens.Select(x => x.Nome))</td>
+                                <td>@pedido.Subtotal.ToString("C", cultura)</td>
+                                <td>@pedido.ValorDesconto.ToString("C", cultura)</td>
+                                <td><strong>@pedido.Total.ToString("C", cultura)</strong></td>
+                                <td class="text-end">
+                                    <form method="post" asp-page="/Index" asp-page-handler="Excluir" class="d-inline">
+                                        <input type="hidden" name="id" value="@pedido.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Excluir</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

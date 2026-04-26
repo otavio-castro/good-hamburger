@@ -1,10 +1,48 @@
 ﻿@page
 @model IndexModel
+@using GoodHamburgerFront.Models.Components
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Good Hamburger";
+    var cardapioSection = new CardapioSectionViewModel
+    {
+        Cardapio = Model.Cardapio
+    };
+
+    var pedidoFormsSection = new PedidoFormsSectionViewModel
+    {
+        Sanduiches = Model.Cardapio.Where(x => x.Categoria.Equals("Sanduiche", StringComparison.OrdinalIgnoreCase)).ToList(),
+        Batata = Model.Cardapio.FirstOrDefault(x => x.Categoria.Equals("Acompanhamento", StringComparison.OrdinalIgnoreCase)),
+        Refrigerante = Model.Cardapio.FirstOrDefault(x => x.Categoria.Equals("Bebida", StringComparison.OrdinalIgnoreCase))
+    };
+
+    var pedidosSection = new PedidosSectionViewModel
+    {
+        Pedidos = Model.Pedidos
+    };
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="mb-4">
+    <h1 class="display-6">Good Hamburger - Pedidos</h1>
 </div>
+
+@if (!string.IsNullOrWhiteSpace(Model.Sucesso))
+{
+    <div class="alert alert-success" role="alert">@Model.Sucesso</div>
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.Erro))
+{
+    <div class="alert alert-danger" role="alert">@Model.Erro</div>
+}
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <partial name="_CardapioSection" model="cardapioSection" />
+    </div>
+
+    <div class="col-lg-6">
+        <partial name="_PedidoFormsSection" model="pedidoFormsSection" />
+    </div>
+</div>
+
+<partial name="_PedidosSection" model="pedidosSection" />
