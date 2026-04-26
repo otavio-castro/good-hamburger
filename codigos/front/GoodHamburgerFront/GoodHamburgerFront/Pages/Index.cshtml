@@ -12,7 +12,12 @@
     {
         Sanduiches = Model.Cardapio.Where(x => x.Categoria.Equals("Sanduiche", StringComparison.OrdinalIgnoreCase)).ToList(),
         Batata = Model.Cardapio.FirstOrDefault(x => x.Categoria.Equals("Acompanhamento", StringComparison.OrdinalIgnoreCase)),
-        Refrigerante = Model.Cardapio.FirstOrDefault(x => x.Categoria.Equals("Bebida", StringComparison.OrdinalIgnoreCase))
+        Refrigerante = Model.Cardapio.FirstOrDefault(x => x.Categoria.Equals("Bebida", StringComparison.OrdinalIgnoreCase)),
+        BuscarPedidoId = Model.BuscarPedidoId,
+        EditarPedidoId = Model.EditarPedidoId,
+        SanduicheId = Model.SanduicheId,
+        IncluirBatata = Model.IncluirBatata,
+        IncluirRefrigerante = Model.IncluirRefrigerante
     };
 
     var pedidosSection = new PedidosSectionViewModel
@@ -22,7 +27,7 @@
 }
 
 <div class="mb-4">
-    <h1 class="display-6">Good Hamburger - Pedidos</h1>
+    <h1 class="display-6">Good Hamburger</h1>
 </div>
 
 @if (!string.IsNullOrWhiteSpace(Model.Sucesso))

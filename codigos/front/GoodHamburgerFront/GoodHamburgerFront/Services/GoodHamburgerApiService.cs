@@ -31,6 +31,20 @@ public sealed class GoodHamburgerApiService : IGoodHamburgerApiService
         return pedidos ?? [];
     }
 
+    public async Task<PedidoViewModel?> ObterPedidoPorIdAsync(int pedidoId)
+    {
+        var client = CriarClient();
+
+        try
+        {
+            return await client.GetFromJsonAsync<PedidoViewModel>($"/api/pedidos/{pedidoId}").ConfigureAwait(false);
+        }
+        catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+        {
+            return null;
+        }
+    }
+
     public Task<ApiResult> CriarPedidoAsync(List<int> produtoIds)
     {
         var body = new CriarPedidoRequest { ProdutoIds = produtoIds };

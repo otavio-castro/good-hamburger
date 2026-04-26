@@ -29,6 +29,9 @@ namespace GoodHamburgerFront.Pages
         [BindProperty]
         public int? EditarPedidoId { get; set; }
 
+        [BindProperty]
+        public int? BuscarPedidoId { get; set; }
+
         [TempData]
         public string? Sucesso { get; set; }
 
@@ -63,6 +66,43 @@ namespace GoodHamburgerFront.Pages
             }
 
             return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostBuscarPedidoAsync()
+        {
+            await CarregarCardapioAsync().ConfigureAwait(false);
+
+            if (!BuscarPedidoId.HasValue || BuscarPedidoId.Value <= 0)
+            {
+                Erro = "Informe um ID válido para buscar o pedido.";
+                return RedirectToPage();
+            }
+
+            var pedido = await _apiService.ObterPedidoPorIdAsync(BuscarPedidoId.Value).ConfigureAwait(false);
+
+            if (pedido == null)
+            {
+                Erro = "Pedido não encontrado.";
+                return RedirectToPage();
+            }
+
+            EditarPedidoId = pedido.Id;
+            var nomesItens = pedido.Itens.Select(i => i.Nome).ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            SanduicheId = Cardapio
+                .FirstOrDefault(c => c.Categoria.Equals("Sanduiche", StringComparison.OrdinalIgnoreCase) && nomesItens.Contains(c.Nome))
+                ?.Id;
+
+            IncluirBatata = Cardapio
+                .Any(c => c.Categoria.Equals("Acompanhamento", StringComparison.OrdinalIgnoreCase) && nomesItens.Contains(c.Nome));
+
+            IncluirRefrigerante = Cardapio
+                .Any(c => c.Categoria.Equals("Bebida", StringComparison.OrdinalIgnoreCase) && nomesItens.Contains(c.Nome));
+
+            Pedidos = await _apiService.ObterPedidosAsync().ConfigureAwait(false);
+            Sucesso = $"Pedido {pedido.Id} carregado para edição.";
+
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAtualizarAsync()

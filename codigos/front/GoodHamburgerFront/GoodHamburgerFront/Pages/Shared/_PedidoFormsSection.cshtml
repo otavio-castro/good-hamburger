@@ -45,10 +45,20 @@
     <div class="card-body">
         <h2 class="h5">Atualizar pedido</h2>
 
+        <form method="post" asp-page="/Index" asp-page-handler="BuscarPedido" class="mb-4">
+            <div class="mb-3">
+                <label for="BuscarPedidoId" class="form-label">Buscar pedido por ID</label>
+                <div class="input-group">
+                    <input id="BuscarPedidoId" name="BuscarPedidoId" class="form-control" min="1" type="number" value="@Model.BuscarPedidoId" />
+                    <button type="submit" class="btn btn-outline-secondary">Buscar</button>
+                </div>
+            </div>
+        </form>
+
         <form method="post" asp-page="/Index" asp-page-handler="Atualizar">
             <div class="mb-3">
                 <label for="EditarPedidoId" class="form-label">ID do pedido</label>
-                <input id="EditarPedidoId" name="EditarPedidoId" class="form-control" min="1" type="number" />
+                <input id="EditarPedidoId" name="EditarPedidoId" class="form-control" min="1" type="number" value="@Model.EditarPedidoId" />
             </div>
 
             <div class="mb-3">
@@ -57,13 +67,13 @@
                     <option value="">Selecione</option>
                     @foreach (var sanduiche in Model.Sanduiches)
                     {
-                        <option value="@sanduiche.Id">@sanduiche.Nome - @sanduiche.Preco.ToString("C", cultura)</option>
+                        <option value="@sanduiche.Id" selected="@(Model.SanduicheId == sanduiche.Id ? "selected" : null)">@sanduiche.Nome - @sanduiche.Preco.ToString("C", cultura)</option>
                     }
                 </select>
             </div>
 
             <div class="form-check mb-2">
-                <input id="IncluirBatataAtualizar" name="IncluirBatata" value="true" class="form-check-input" type="checkbox" />
+                <input id="IncluirBatataAtualizar" name="IncluirBatata" value="true" class="form-check-input" type="checkbox" checked="@(Model.IncluirBatata ? "checked" : null)" />
                 <input name="IncluirBatata" value="false" type="hidden" />
                 <label for="IncluirBatataAtualizar" class="form-check-label">
                     @Model.Batata?.Nome (@Model.Batata?.Preco.ToString("C", cultura))
@@ -71,7 +81,7 @@
             </div>
 
             <div class="form-check mb-3">
-                <input id="IncluirRefrigeranteAtualizar" name="IncluirRefrigerante" value="true" class="form-check-input" type="checkbox" />
+                <input id="IncluirRefrigeranteAtualizar" name="IncluirRefrigerante" value="true" class="form-check-input" type="checkbox" checked="@(Model.IncluirRefrigerante ? "checked" : null)" />
                 <input name="IncluirRefrigerante" value="false" type="hidden" />
                 <label for="IncluirRefrigeranteAtualizar" class="form-check-label">
                     @Model.Refrigerante?.Nome (@Model.Refrigerante?.Preco.ToString("C", cultura))
